@@ -13,10 +13,12 @@ const Contact = () => {
           type="text"
           id="email"
           name="email"
-          placeholder="Jiara Martins"
+          placeholder="hello@reallygreatsite.com"
         />
         <label  htmlFor="message">MESSAGE</label>
-        <textarea className="border-2  bg-white opacity-80 px-4 py-1" id="message" name="message" />
+        <textarea className="border-2  bg-white opacity-80 px-4 py-1" id="message" name="message" 
+          placeholder="Write your message here"
+        />
         <button className="rounded bg-pink-800 mt-4 px-4 py-2 text-sm text-white font-bold">
           Send the message{" "}
         </button>
