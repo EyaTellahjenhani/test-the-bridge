@@ -1,11 +1,23 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../component/Navbar";
 import Banner from "../component/Banner";
 import Contact from "../component/Contact";
 import Card from "../component/Card";
-
+import axios from "axios";
 
 const HomePage = () => {
+  const [coursList, setCoursList] = useState([]);
+
+  useEffect(() => {
+    const getCoursList = async () => {
+      const response = await axios.get("/api/cours/");
+      setCoursList(response.data.cours);
+      console.log(response)
+    };
+console.log(coursList)
+    getCoursList();
+  }, []);
+
   return (
     <div>
       <Navbar />
@@ -18,12 +30,9 @@ const HomePage = () => {
           </button>
         </div>
         <div className="grid grid-cols-3 place-items-center flex-wrap items-center justify-center ">
-          <Card />
-          <Card />
-          <Card />
-          <Card />
-          <Card />
-          <Card />
+          {coursList?.map((cours) => (
+            <Card cours={cours} key={cours.id} />
+          ))}
         </div>
       </div>
       <Contact />

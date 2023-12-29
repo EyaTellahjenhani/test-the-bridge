@@ -1,6 +1,48 @@
-import React from 'react'
+import axios from 'axios';
+import React, { useState } from 'react'
 
 const Creat = () => {
+
+
+  const [image, setImage] = useState(null);
+  const [title, setTitle] = useState('');
+  const [price, setPrice] = useState('');
+  const [success, setSuccess] = useState("");
+  const [isLoaded, setIsLoaded] = useState(false);
+
+
+  const handleDataChange = (e) => {
+		const reader = new FileReader();
+
+		reader.onload = () => {
+			if (reader.readyState === 2) {
+				setImage(reader.result);
+			}
+		};
+		reader.readAsDataURL(e.target.files[0]);
+	}
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setIsLoaded(true)
+  
+    try {
+      const response = await axios.post('/api/cours/', {title,price,image} , {withCredentials: true} );
+
+
+setSuccess(response.data)
+setIsLoaded(false)
+
+
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      setIsLoaded(false)
+
+    }
+  };
+
+
+
   return (
 
     <div>
@@ -55,6 +97,7 @@ const Creat = () => {
                   type="text"
                   name="title"
                   id="title"
+                  onChange={(e)=>setTitle(e.target.value)}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                   placeholder="Type course title"
                   required=""
@@ -71,6 +114,7 @@ const Creat = () => {
                   type="number"
                   name="price"
                   id="price"
+                  onChange={(e)=>setPrice(e.target.value)}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                   placeholder="On DT/ Month"
                   required=""
@@ -81,6 +125,7 @@ const Creat = () => {
                 <input
                   type="file"
                   className="absolute inset-0 w-full h-full opacity-0 z-50"
+                  onChange={handleDataChange}
                 />
                 <div className="text-center">
                   <img
@@ -116,9 +161,20 @@ const Creat = () => {
               </div>
             </div>
 
+            <div className="flex justify-center">
+            {isLoaded && (
+              <div className="flex items-center justify-center">
+                <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+              </div>
+            )}
+            </div>
+            <div className="flex justify-center">
+              <p className="text-green-500">{success}</p>
+            </div>
 
             <button
               type="submit"
+              onClick={handleSubmit}
               className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
             >
               <svg

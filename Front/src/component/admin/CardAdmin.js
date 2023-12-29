@@ -28,7 +28,7 @@ const CardAdmin = ({ cours }) => {
           />
         </div>
         <Edit cours={cours} />
-        <Delet />
+        <Delet cours={cours} />
         <Read cours={cours}/>
       </div>
     </div>
