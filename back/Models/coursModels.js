@@ -1,66 +1,102 @@
-const mysql = require("mysql2/promise");
+const mysql= require('mysql2/promise');
 
-const db = mysql.createPool({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "the_bridge",
-});
 
-exports.find = async () => {
-  const [results] = await db.execute("SELECT * FROM coure");
-  if (results.length > 0) {
-    return results;
-  } else {
-    return null;
-  }
-};
 
-exports.create = async (title, image, price) => {
-    const [results] = await db.execute(
-        "INSERT INTO coure (title, image, price) VALUES (?, ?, ?)",
-        [title, image, price]
-    );
-    if (results.affectedRows > 0) {
-        return results;
-    } else {
-        return null;
+const dbconfig = {
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'the_bridge'
+}
+
+
+// Recupération  des détails d'un cours
+exports.getcours=async(id)=>{
+
+    try{
+       let connection = await mysql.createConnection(dbconfig);
+        const [rows]=await connection.execute('SELECT *  FROM `coure`  WHERE id = ?',[id]);
+        if(rows.length>0){ 
+            return rows;
+        }
+    else{
+         return null
+        }
+    }catch (error){
+        console.log(error);
     }
-    };
+}
 
 
-    exports.update = async (
-        title,
-        image,
-        price,
-        id
-      ) => {
-        const [results] = await db.execute(
-          "UPDATE coure SET  Title=?, Price=? WHERE id =?",
-          [title, price, id]
-        );
-        if (results.affectedRows > 0) {
-          const [imageRes] = await db.execute(
-            "UPDATE images SET image=?  WHERE id =?",
-            [image, id]
-          );
-          return imageRes;
-        } else {
-          return null;
+
+
+
+
+exports.addcoursModel=async(title,image,price)=>{
+    try{
+        let connection = await mysql.createConnection(dbconfig);
+    
+        const [rows]=await connection.execute('INSERT INTO `coure` (title,image,price) VALUES (?,?,?)', [title,image,price]);
+        if(rows.affectedRows>0){ 
+            return rows;
         }
-      };
-
-      exports.remove = async (id) => {
-        const [results] = await db.execute(
-          "DELETE FROM coure WHERE id =?",
-          [id]
-        );
-        if (results.affectedRows > 0) {
-          return results;
-        } else {
-          return null;
+    else{
+         return null;
         }
-      };
+    }catch (error){
+        console.log('Erreur:')
+    }
+}
 
 
-module.exports = db;
+
+
+
+
+
+// Suppression d'un cours
+
+exports.deletecoursModel=async(id)=>{
+    try{
+        let connection = await mysql.createConnection(dbconfig);
+        const [rows]=await connection.execute('DELETE FROM `coure` WHERE id=?', [id]);
+        if(rows.affectedRows>0){ 
+            return rows;
+        }
+    else{
+         return null;
+        }
+    }catch (error){
+        console.log('Erreur')
+    }
+}
+
+exports.modifycoursModel=async(id,title,image,price)=>{
+    try{
+        let connection = await mysql.createConnection(dbconfig);
+        const [rows]=await connection.execute('UPDATE `coure` SET title=?,image=?,price=? WHERE id=?', [title,image,price,id]);
+        if(rows.affectedRows>0){ 
+            return rows;
+        }
+    else{
+         return null;
+        }
+    }catch (error){
+        console.log('Erreur')
+    }
+}
+
+exports.getAllcoursModel=async()=>{
+    try{
+        let connection = await mysql.createConnection(dbconfig);
+        const [rows]=await connection.execute('SELECT * FROM `coure`');
+        if(rows.length>0){ 
+            return rows;
+        }
+    else{
+         return null;
+        }
+    }catch (error){
+        console.log('Erreur')
+    }
+}

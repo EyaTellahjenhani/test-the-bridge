@@ -1,48 +1,29 @@
-const express  = require("express");
-const dotenv = require("dotenv");
-const DBConnection = require("./config/DBConnection");
-const adminRouter = require("./Routes/adminRouter");
+const express = require("express");
+const coursRouter = require("./Routers/coursRouter");
 const app = express();
+const cors = require('cors')
 const cloudinary = require('cloudinary').v2;
 
-const  cors = require('cors')
-const morgan = require('morgan')
-dotenv.config();
+app.use(express.json());
 
 
-
-  cloudinary.config({
-    cloud_name: process.env.Cloudinary_Name,
-    api_key: process.env.Cloudinary_Key,
-    api_secret: process.env.Cloudinary_Secret,
+cloudinary.config({
+    cloud_name: "ddmynkkvx",
+    api_key: "249194221859348",
+    api_secret: "03z840KjMPvS69qtngzFsjjz00M",
   });
   
 
 
-dotenv.config();
+
+app.use("/api/cours",coursRouter);
 app.use(express.json());
-app.use(morgan('dev'))
-app.use(express.urlencoded({ limit: '50mb', extended: true }));
-
-app.use(cors({
-    origin:'http://localhost:5173', 
-    credentials:true,          
-}))
-
-
-
-// API
-app.use("/api/admin",adminRouter);
+app.use(cors({origin: '*'}))
 
 
 
 
-
-
-
-const port = process.env.PORT || 1000;
-app.listen(port, ()=>{
-console.log(`Server connected on port ${port}`)
-DBConnection();
-
-});
+const port = 1000;
+app.listen(port,()=>{
+    console.log(`Server is running on port ${port}`);
+})
